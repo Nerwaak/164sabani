@@ -11,19 +11,18 @@ from wtforms.validators import Regexp
 
 
 class FormWTFAjouterGenres(FlaskForm):
-    rue_regexp = "^(?!.*['\-\s]{2,})([A-Za-zÀ-ÖØ-öø-ÿ0-9]+['\- ]?)*[A-Za-zÀ-ÖØ-öø-ÿ0-9]+$"
+    rue_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
     rue = StringField("Rue", validators=[Length(min=2, max=50, message="min 2 max 50"),
                                          Regexp(rue_regexp,
-                                                message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
+                                                message="Pas de chiffres, de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
 
     ville = StringField("Ville", validators=[Length(min=2, max=50, message="min 2 max 50"),
                                              Regexp(rue_regexp,
-                                                    message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
+                                                    message="Pas de chiffres, de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
 
     date_debut = DateField("Date de début", format='%Y-%m-%d', validators=[DataRequired(message="Date requise")])
 
     submit = SubmitField("Enregistrer le Chantier")
-
 
 class FormWTFUpdateGenre(FlaskForm):
     """
@@ -33,21 +32,20 @@ class FormWTFUpdateGenre(FlaskForm):
 
 
 class FormWTFUpdateGenre(FlaskForm):
-    nom_rue_update_regexp = "^(?!.*['\-\s]{2,})([A-Za-zÀ-ÖØ-öø-ÿ0-9]+['\- ]?)*[A-Za-zÀ-ÖØ-öø-ÿ0-9]+$"
+    nom_rue_update_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
     nom_rue_update_wtf = StringField("Rue ", validators=[Length(min=2, max=20, message="min 2 max 20"),
                                                          Regexp(nom_rue_update_regexp,
-                                                                message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
+                                                                message="Pas de chiffres, de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
 
-    nom_genre_update_regexp = "^(?!.*['\-\s]{2,})([A-Za-zÀ-ÖØ-öø-ÿ0-9]+['\- ]?)*[A-Za-zÀ-ÖØ-öø-ÿ0-9]+$"
+    nom_genre_update_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
     nom_genre_update_wtf = StringField("Ville ", validators=[Length(min=2, max=20, message="min 2 max 20"),
                                                              Regexp(nom_genre_update_regexp,
-                                                                    message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
+                                                                    message="Pas de chiffres, de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
 
     date_genre_wtf_essai = DateField("Date de début", validators=[InputRequired("Date obligatoire"),
                                                                   DataRequired("Date non valide")])
 
     submit = SubmitField("Update genre")
-
 
 class FormWTFDeleteGenre(FlaskForm):
     """

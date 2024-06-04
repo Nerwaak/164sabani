@@ -95,6 +95,24 @@ class ExceptionChantierAjouterWtf(Base):
     pass
 
 
+
+class ExceptionEmployeAfficher(Base):
+    pass
+
+
+class ExceptionEmployeDeleteWtf(Base):
+    pass
+
+
+class ExceptionEmployeUpdateWtf(Base):
+    pass
+
+
+class ExceptionEmployeAjouterWtf(Base):
+    pass
+
+
+
 class ExceptionEmployeChantierAfficher(Base):
     pass
 

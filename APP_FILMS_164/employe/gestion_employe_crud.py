@@ -330,3 +330,127 @@ def employe_delete_wtf():
                            form_delete=form_delete,
                            btn_submit_del=btn_submit_del,
                            data_films_associes=data_films_attribue_employe_delete)
+
+
+
+
+@app.route("/employe_chantier_afficher/<string:order_by>/<int:id_employe_sel>", methods=['GET', 'POST'])
+def employe_chantier_afficher(order_by, id_employe_sel):
+    if request.method == "GET":
+        try:
+            with DBconnection() as mc_afficher:
+                if order_by == "ASC" and id_employe_sel == 0:
+                    strsql_employe_chantier_afficher = """SELECT 
+                                        ec.ID_employe_chantier, 
+                                        c.ID_Chantier, 
+                                        c.rue, 
+                                        c.cp, 
+                                        c.ville, 
+                                        c.etage,
+                                        c.pays, 
+                                        c.date_debut,
+                                        c.date_fin,
+                                        c.Statut,
+													 e.ID_employe, 
+                                        e.nom,
+                                        e.Prenom, 
+                                        e.Date_de_naissance,
+                                        e.Numero_AVS,
+                                        e.Notoriété, 
+                                        e.Date_de_naissance
+                                    FROM 
+                                        t_chantier c
+                                    JOIN 
+                                        t_employe_chantier ec ON c.ID_Chantier = ec.FK_chantier_employe
+                                    JOIN 
+                                        t_employe e ON ec.FK_employe_chantier = e.ID_employe
+                                    ORDER BY 
+                                        ec.ID_employe_chantier ASC;"""
+                    mc_afficher.execute(strsql_employe_chantier_afficher)
+                elif order_by == "ASC":
+                    # C'EST LA QUE VOUS ALLEZ DEVOIR PLACER VOTRE PROPRE LOGIQUE MySql
+                    # la commande MySql classique est "SELECT * FROM t_employe"
+                    # Pour "lever"(raise) une erreur s'il y a des erreurs sur les noms d'attributs dans la table
+                    # donc, je précise les champs à afficher
+                    # Constitution d'un dictionnaire pour associer l'id du employe sélectionné avec un nom de variable
+                    valeur_id_employe_selected_dictionnaire = {"value_id_employe_selected": id_employe_sel}
+                    strsql_employe_chantier_afficher = """SELECT 
+                                        ec.ID_employe_chantier, 
+                                        c.ID_Chantier, 
+                                        c.rue, 
+                                        c.cp, 
+                                        c.ville, 
+                                        c.etage,
+                                        c.pays, 
+                                        c.date_debut,
+                                        c.date_fin,
+                                        c.Statut,
+													 e.ID_employe, 
+                                        e.nom,
+                                        e.Prenom, 
+                                        e.Date_de_naissance,
+                                        e.Numero_AVS,
+                                        e.Notoriété, 
+                                        e.Date_de_naissance
+                                    FROM 
+                                        t_chantier c
+                                    JOIN 
+                                        t_employe_chantier ec ON c.ID_Chantier = ec.FK_chantier_employe
+                                    JOIN 
+                                        t_employe e ON ec.FK_employe_chantier = e.ID_employe
+                                    ORDER BY 
+                                        ec.ID_employe_chantier ASC;"""
+
+                    mc_afficher.execute(strsql_employe_chantier_afficher, valeur_id_employe_selected_dictionnaire)
+                else:
+                    strsql_employe_chantier_afficher = """SELECT 
+                                        ec.ID_employe_chantier, 
+                                        c.ID_Chantier, 
+                                        c.rue, 
+                                        c.cp, 
+                                        c.ville, 
+                                        c.etage,
+                                        c.pays, 
+                                        c.date_debut,
+                                        c.date_fin,
+                                        c.Statut,
+													 e.ID_employe, 
+                                        e.nom,
+                                        e.Prenom, 
+                                        e.Date_de_naissance,
+                                        e.Numero_AVS,
+                                        e.Notoriété, 
+                                        e.Date_de_naissance
+                                    FROM 
+                                        t_chantier c
+                                    JOIN 
+                                        t_employe_chantier ec ON c.ID_Chantier = ec.FK_chantier_employe
+                                    JOIN 
+                                        t_employe e ON ec.FK_employe_chantier = e.ID_employe
+                                    ORDER BY 
+                                        ec.ID_employe_chantier ASC;"""
+
+                    mc_afficher.execute(strsql_employe_chantier_afficher)
+
+                data_employe = mc_afficher.fetchall()
+
+                print("data_employe ", data_employe, " Type : ", type(data_employe))
+
+                # Différencier les messages si la table est vide.
+                if not data_employe and id_employe_sel == 0:
+                    flash("""La table "t_employe" est vide. !!""", "warning")
+                elif not data_employe and id_employe_sel > 0:
+                    # Si l'utilisateur change l'id_employe dans l'URL et que le employe n'existe pas,
+                    flash(f"Le employe demandé n'existe pas !!", "warning")
+                else:
+                    # Dans tous les autres cas, c'est que la table "t_employe" est vide.
+                    # OM 2020.04.09 La ligne ci-dessous permet de donner un sentiment rassurant aux utilisateurs.
+                    flash(f"Données employe affichés !!", "success")
+
+        except Exception as Exception_employe_chantier_afficher:
+            raise ExceptionEmployeAfficher(f"fichier : {Path(__file__).name}  ;  "
+                                          f"{employe_chantier_afficher.__name__} ; "
+                                          f"{Exception_employe_chantier_afficher}")
+
+    # Envoie la page "HTML" au serveur.
+    return render_template("employe/employe_chantier_afficher.html", data=data_employe)

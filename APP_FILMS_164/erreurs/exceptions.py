@@ -79,47 +79,47 @@ class DatabaseException(Base):
     pass
 
 
-class ExceptionGenresAfficher(Base):
+class ExceptionChantierAfficher(Base):
     pass
 
 
-class ExceptionGenreDeleteWtf(Base):
+class ExceptionChantierDeleteWtf(Base):
     pass
 
 
-class ExceptionGenreUpdateWtf(Base):
+class ExceptionChantierUpdateWtf(Base):
     pass
 
 
-class ExceptionGenresAjouterWtf(Base):
+class ExceptionChantierAjouterWtf(Base):
     pass
 
 
-class ExceptionFilmsGenresAfficher(Base):
+class ExceptionEmployeChantierAfficher(Base):
     pass
 
 
-class ExceptionEditGenreFilmSelected(Base):
+class ExceptionEditChantierEmployeelected(Base):
     pass
 
 
-class ExceptionUpdateGenreFilmSelected(Base):
+class ExceptionUpdateChantierEmployeelected(Base):
     pass
 
 
-class ExceptionGenresFilmsAfficherData(Base):
+class ExceptionChantierEmployeAfficherData(Base):
     pass
 
 
-class ExceptionFilmUpdateWtf(Base):
+class ExceptionEmployeUpdateWtf(Base):
     pass
 
 
-class ExceptionFilmDeleteWtf(Base):
+class ExceptionEmployeDeleteWtf(Base):
     pass
 
 
-class ExceptionInitAppFilms164(Base):
+class ExceptionInitAppEmploye164(Base):
     pass
 
 

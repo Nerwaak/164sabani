@@ -18,6 +18,13 @@
                             <span style="color: red;">[{{ error }}]</span>
                         {% endfor %}
                     </p>
+                      <p>
+                        {{ form.cp.label }}<br>
+                        {{ form.cp(size=32) }}<br>
+                        {% for error in form.cp.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
                     <p>
                         {{ form.ville.label }}<br>
                         {{ form.ville(size=32) }}<br>
@@ -25,10 +32,38 @@
                             <span style="color: red;">[{{ error }}]</span>
                         {% endfor %}
                     </p>
+                     <p>
+                        {{ form.etage.label }}<br>
+                        {{ form.etage(size=32) }}<br>
+                        {% for error in form.ville.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                      <p>
+                        {{ form.pays.label }}<br>
+                        {{ form.pays(size=32) }}<br>
+                        {% for error in form.pays.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
                     <p>
                         {{ form.date_debut.label }}<br>
                         {{ form.date_debut() }}<br>
                         {% for error in form.date_debut.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                     <p>
+                        {{ form.date_fin.label }}<br>
+                        {{ form.date_fin() }}<br>
+                        {% for error in form.date_fin.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                     <p>
+                        {{ form.statut.label }}<br>
+                        {{ form.statut() }}<br>
+                        {% for error in form.statut.errors %}
                             <span style="color: red;">[{{ error }}]</span>
                         {% endfor %}
                     </p>

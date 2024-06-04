@@ -12,9 +12,9 @@ from flask import url_for
 from APP_FILMS_164 import app
 from APP_FILMS_164.database.database_tools import DBconnection
 from APP_FILMS_164.erreurs.exceptions import *
-from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFAjouterGenres
-from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFDeleteGenre
-from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFUpdateGenre
+from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFAjouterChantier
+from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFDeleteChantier
+from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFUpdateChantier
 
 """
     Auteur : OM 2021.03.16
@@ -67,7 +67,7 @@ def genres_afficher(order_by, id_genre_sel):
                     flash(f"Données genres affichés !!", "success")
 
         except Exception as Exception_genres_afficher:
-            raise ExceptionGenresAfficher(f"fichier : {Path(__file__).name}  ;  "
+            raise ExceptionChantierAfficher(f"fichier : {Path(__file__).name}  ;  "
                                           f"{genres_afficher.__name__} ; "
                                           f"{Exception_genres_afficher}")
 
@@ -97,23 +97,35 @@ def genres_afficher(order_by, id_genre_sel):
 
 @app.route("/genres_ajouter", methods=['GET', 'POST'])
 def genres_ajouter_wtf():
-    form = FormWTFAjouterGenres()
+    form = FormWTFAjouterChantier()
     if request.method == "POST":
         try:
             if form.validate_on_submit():
                 rue = form.rue.data
+                cp = form.cp.data
                 ville = form.ville.data
+                etage = form.etage.data
+                pays = form.etage.data
                 date_debut = form.date_debut.data
+                date_fin = form.date_fin.data
+                statut = form.statut.data
+
 
                 valeurs_insertion_dictionnaire = {
                     "value_rue": rue,
+                    "value_cp": cp,
                     "value_ville": ville,
-                    "value_date_debut": date_debut
+                    "value_etage": etage,
+                    "value_pays": pays,
+                    "value_date_debut": date_debut,
+                    "value_date_fin": date_fin,
+                    "value_statut": statut,
                 }
                 print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
 
-                strsql_insert_genre = """INSERT INTO t_Chantier (id_Chantier, Rue, Ville, Date_debut) 
-                                         VALUES (NULL, %(value_rue)s, %(value_ville)s, %(value_date_debut)s)"""
+                strsql_insert_genre = """INSERT INTO t_Chantier (id_Chantier, Rue, Cp, Ville, Etage, Pays, Date_debut, 
+                Date_fin, statut) 
+                                         VALUES (NULL, %(value_rue)s, %(value_cp)s, %(value_ville)s, %(value_etage)s, %(value_pays)s, %(value_date_debut)s, %(value_date_fin)s, %(value_statut)s)"""
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_insert_genre, valeurs_insertion_dictionnaire)
 
@@ -123,7 +135,7 @@ def genres_ajouter_wtf():
                 return redirect(url_for('genres_afficher', order_by='DESC', id_genre_sel=0))
 
         except Exception as Exception_genres_ajouter_wtf:
-            raise ExceptionGenresAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
+            raise ExceptionChantierAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
                                             f"{genres_ajouter_wtf.__name__} ; "
                                             f"{Exception_genres_ajouter_wtf}")
 
@@ -153,63 +165,66 @@ def genres_ajouter_wtf():
 
 @app.route("/genre_update", methods=['GET', 'POST'])
 def genre_update_wtf():
-    # L'utilisateur vient de cliquer sur le bouton "EDIT". Récupère la valeur de "id_geenre"
     id_genre_update = request.values['id_genre_btn_edit_html']
 
-    # Objet formulaire pour l'UPDATE
-    form_update = FormWTFUpdateGenre()
+    form_update = FormWTFUpdateChantier()
     try:
-        # 2023.05.14 OM S'il y a des listes déroulantes dans le formulaire
-        # La validation pose quelques problèmes
         if request.method == "POST" and form_update.submit.data:
-            # Récupèrer la valeur du champ depuis "genre_update_wtf.html" après avoir cliqué sur "SUBMIT".
-            # Puis la convertir en lettres minuscules.
-            name_genre_update = form_update.nom_genre_update_wtf.data.lower()
-            date_genre_essai = form_update.date_genre_wtf_essai.data
-            nom_rue_update = form_update.nom_rue_update_wtf.data
+            rue = form_update.nom_rue_update_wtf.data
+            cp = form_update.cp_update_wtf.data
+            ville = form_update.ville_update_wtf.data
+            etage = form_update.etage_update_wtf.data
+            pays = form_update.pays_update_wtf.data
+            date_debut = form_update.date_debut_update_wtf.data
+            date_fin = form_update.date_fin_update_wtf.data
+            statut = form_update.statut_update_wtf.data
 
-            valeur_update_dictionnaire = {"value_id_genre": id_genre_update,
-                                          "value_name_genre": name_genre_update,
-                                          "value_date_genre_essai": date_genre_essai,
-                                          "value_nom_rue": nom_rue_update,
-                                          }
-            print("valeur_update_dictionnaire ", valeur_update_dictionnaire)
+            valeur_update_dictionnaire = {
+                "value_rue": rue,
+                "value_cp": cp,
+                "value_ville": ville,
+                "value_etage": etage,
+                "value_pays": pays,
+                "value_date_debut": date_debut,
+                "value_date_fin": date_fin,
+                "value_statut": statut,
+                "value_id_genre": id_genre_update
+            }
 
-            str_sql_update_intitulegenre = """UPDATE t_Chantier SET Ville = %(value_name_genre)s, 
-            Date_debut = %(value_date_genre_essai)s, rue = %(value_nom_rue)s WHERE ID_Chantier = %(value_id_genre)s """
+            str_sql_update_chantier = """UPDATE t_Chantier SET Rue = %(value_rue)s, 
+                                        Cp = %(value_cp)s, Ville = %(value_ville)s, 
+                                        Etage = %(value_etage)s, Pays = %(value_pays)s, 
+                                        Date_debut = %(value_date_debut)s, 
+                                        Date_fin = %(value_date_fin)s, 
+                                        statut = %(value_statut)s 
+                                        WHERE ID_Chantier = %(value_id_genre)s"""
             with DBconnection() as mconn_bd:
-                mconn_bd.execute(str_sql_update_intitulegenre, valeur_update_dictionnaire)
+                mconn_bd.execute(str_sql_update_chantier, valeur_update_dictionnaire)
 
             flash(f"Donnée mise à jour !!", "success")
-            print(f"Donnée mise à jour !!")
-
-            # afficher et constater que la donnée est mise à jour.
-            # Affiche seulement la valeur modifiée, "ASC" et l'"id_genre_update"
             return redirect(url_for('genres_afficher', order_by="ASC", id_genre_sel=id_genre_update))
         elif request.method == "GET":
-            # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
-            str_sql_id_genre = "SELECT * FROM t_chantier " \
-                               "WHERE ID_Chantier = %(value_id_genre)s"
+            str_sql_id_genre = "SELECT * FROM t_Chantier WHERE ID_Chantier = %(value_id_genre)s"
             valeur_select_dictionnaire = {"value_id_genre": id_genre_update}
             with DBconnection() as mybd_conn:
                 mybd_conn.execute(str_sql_id_genre, valeur_select_dictionnaire)
-            # Une seule valeur est suffisante "fetchone()", vu qu'il n'y a qu'un seul champ "nom genre" pour l'UPDATE
-            data_nom_genre = mybd_conn.fetchone()
-            #print("data_nom_genre ", data_nom_genre, " type ", type(data_nom_genre), " genre ",
-             #     data_nom_genre["intitule_genre"])
+            data_chantier = mybd_conn.fetchone()
 
-            # Afficher la valeur sélectionnée dans les champs du formulaire "genre_update_wtf.html"
-            form_update.nom_genre_update_wtf.data = data_nom_genre["Ville"]
-            form_update.date_genre_wtf_essai.data = data_nom_genre["Date_debut"]
-            form_update.nom_rue_update_wtf.data = data_nom_genre["Rue"]
+            form_update.nom_rue_update_wtf.data = data_chantier["Rue"]
+            form_update.cp_update_wtf.data = data_chantier["Cp"]
+            form_update.ville_update_wtf.data = data_chantier["Ville"]
+            form_update.etage_update_wtf.data = data_chantier["Etage"]
+            form_update.pays_update_wtf.data = data_chantier["Pays"]
+            form_update.date_debut_update_wtf.data = data_chantier["Date_debut"]
+            form_update.date_fin_update_wtf.data = data_chantier["Date_fin"]
+            form_update.statut_update_wtf.data = data_chantier["Statut"]
 
     except Exception as Exception_genre_update_wtf:
-        raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
+        raise ExceptionChantierUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
                                       f"{genre_update_wtf.__name__} ; "
                                       f"{Exception_genre_update_wtf}")
 
     return render_template("genres/genre_update_wtf.html", form_update=form_update)
-
 
 """
     Auteur : OM 2021.04.08
@@ -234,7 +249,7 @@ def genre_delete_wtf():
     id_genre_delete = request.values['id_genre_btn_delete_html']
 
     # Objet formulaire pour effacer le genre sélectionné.
-    form_delete = FormWTFDeleteGenre()
+    form_delete = FormWTFDeleteChantier()
     try:
         print(" on submit ", form_delete.validate_on_submit())
         if request.method == "POST" and form_delete.validate_on_submit():
@@ -307,7 +322,7 @@ def genre_delete_wtf():
             btn_submit_del = False
 
     except Exception as Exception_genre_delete_wtf:
-        raise ExceptionGenreDeleteWtf(f"fichier : {Path(__file__).name}  ;  "
+        raise ExceptionChantierDeleteWtf(f"fichier : {Path(__file__).name}  ;  "
                                       f"{genre_delete_wtf.__name__} ; "
                                       f"{Exception_genre_delete_wtf}")
 

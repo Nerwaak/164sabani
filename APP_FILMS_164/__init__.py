@@ -47,6 +47,9 @@ try:
     from APP_FILMS_164.films_genres import gestion_films_genres_crud
     from APP_FILMS_164.erreurs import msg_avertissements
 
+    from APP_FILMS_164.employe import gestion_employe_crud
+    from APP_FILMS_164.erreurs import msg_avertissements
+
 
 
 except Exception as Exception_init_app_films_164:

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %} Editer un Chantier (WTF) {% endblock %}
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <p>
+                Editer un Chantier
+            </p>
+            <form action="" method="POST" novalidate>
+                <!-- Protection contre les attaques Cross-Site Request Forgery (CSRF) -->
+                {{ form_update.hidden_tag() }}
+                <div class="form-group">
+                    <p>
+                        {{ form_update.nom_rue_update_wtf.label }}<br>
+                        {{ form_update.nom_rue_update_wtf(size=32) }}<br>
+                        {% for error in form_update.nom_rue_update_wtf.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ form_update.cp_update_wtf.label }}<br>
+                        {{ form_update.cp_update_wtf(size=32) }}<br>
+                        {% for error in form_update.cp_update_wtf.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ form_update.ville_update_wtf.label }}<br>
+                        {{ form_update.ville_update_wtf(size=32) }}<br>
+                        {% for error in form_update.ville_update_wtf.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ form_update.etage_update_wtf.label }}<br>
+                        {{ form_update.etage_update_wtf(size=32) }}<br>
+                        {% for error in form_update.etage_update_wtf.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ form_update.pays_update_wtf.label }}<br>
+                        {{ form_update.pays_update_wtf(size=32) }}<br>
+                        {% for error in form_update.pays_update_wtf.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ form_update.date_debut_update_wtf.label }}<br>
+                        {{ form_update.date_debut_update_wtf(size=32) }}<br>
+                        {% for error in form_update.date_debut_update_wtf.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ form_update.date_fin_update_wtf.label }}<br>
+                        {{ form_update.date_fin_update_wtf(size=32) }}<br>
+                        {% for error in form_update.date_fin_update_wtf.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ form_update.statut_update_wtf.label }}<br>
+                        {{ form_update.statut_update_wtf(size=32) }}<br>
+                        {% for error in form_update.statut_update_wtf.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                </div>
+                {{ form_update.submit(class="btn btn-primary") }}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

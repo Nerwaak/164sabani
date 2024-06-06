@@ -28,8 +28,8 @@ class FormWTFAjouterChantier(FlaskForm):
                                              Regexp( chantier_ajouter_regexp,
                                                     message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
 
-    pays = StringField("Pays", validators=[Length(min=2, max=50, message="min 2 max 50"),
-                                             Regexp( chantier_ajouter_regexp,
+    pays = StringField("Pays", validators=[Length(min=1, max=50, message="min 2 max 50"),
+                                             Regexp(chantier_ajouter_regexp,
                                                     message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
 
     date_debut = DateField("Date de début", format='%Y-%m-%d', validators=[DataRequired(message="Date requise")])
@@ -62,9 +62,9 @@ class FormWTFUpdateChantier(FlaskForm):
 
     etage_update_wtf = IntegerField("Etage", validators=[DataRequired()])
 
-    pays_update_wtf = StringField("Pays", validators=[Length(min=2, max=50, message="min 2 max 50"),
-                                                      Regexp(chantier_update_regexp,
-                                                             message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
+    pays_update_wtf = StringField("Pays", validators=[Length(min=2, max=20, message="min 2 max 20"),
+                                                        Regexp(chantier_update_regexp,
+                                                               message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
 
     date_debut_update_wtf = DateField("Date de début", validators=[InputRequired("Date obligatoire"),
                                                                    DataRequired("Date non valide")])

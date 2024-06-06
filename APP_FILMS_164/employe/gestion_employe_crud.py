@@ -101,31 +101,23 @@ def employe_ajouter_wtf():
     if request.method == "POST":
         try:
             if form.validate_on_submit():
-                rue = form.rue.data
-                cp = form.cp.data
-                ville = form.ville.data
-                etage = form.etage.data
-                pays = form.etage.data
-                date_debut = form.date_debut.data
-                date_fin = form.date_fin.data
-                statut = form.statut.data
-
+                nom = form.nom.data
+                prenom = form.prenom.data
+                date_de_naissance = form.date_de_naissance.data
+                numero_avs = form.numero_avs.data
+                notoriete = form.notoriete.data
 
                 valeurs_insertion_dictionnaire = {
-                    "value_rue": rue,
-                    "value_cp": cp,
-                    "value_ville": ville,
-                    "value_etage": etage,
-                    "value_pays": pays,
-                    "value_date_debut": date_debut,
-                    "value_date_fin": date_fin,
-                    "value_statut": statut,
+                    "value_nom": nom,
+                    "value_prenom": prenom,
+                    "value_date_de_naissance": date_de_naissance,
+                    "value_numero_avs": numero_avs,
+                    "value_notoriété": notoriete,
                 }
                 print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
 
-                strsql_insert_employe = """INSERT INTO t_employe (id_employe, Rue, Cp, Ville, Etage, Pays, Date_debut, 
-                Date_fin, statut) 
-                                         VALUES (NULL, %(value_rue)s, %(value_cp)s, %(value_ville)s, %(value_etage)s, %(value_pays)s, %(value_date_debut)s, %(value_date_fin)s, %(value_statut)s)"""
+                strsql_insert_employe = """INSERT INTO t_employe (id_employe, nom, prenom, date_de_naissance, numero_avs, notoriete) 
+                                         VALUES (NULL, %(value_nom)s, %(value_prenom)s, %(value_date_de_naissance)s, %(value_numero_avs)s, %(value_notoriete)s)"""
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_insert_employe, valeurs_insertion_dictionnaire)
 
@@ -165,39 +157,21 @@ def employe_ajouter_wtf():
 
 @app.route("/employe_update", methods=['GET', 'POST'])
 def employe_update_wtf():
-    id_employe_update = request.values['id_employe_btn_edit_html']
-
+    id_employe_update = request.values.get('id_employe_btn_edit_html')
     form_update = FormWTFUpdateemploye()
     try:
         if request.method == "POST" and form_update.submit.data:
-            rue = form_update.nom_rue_update_wtf.data
-            cp = form_update.cp_update_wtf.data
-            ville = form_update.ville_update_wtf.data
-            etage = form_update.etage_update_wtf.data
-            pays = form_update.pays_update_wtf.data
-            date_debut = form_update.date_debut_update_wtf.data
-            date_fin = form_update.date_fin_update_wtf.data
-            statut = form_update.statut_update_wtf.data
+            nom = form_update.nom_update_wtf.data
+            prenom = form_update.prenom_update_wtf.data
+            notoriete = form_update.notoriete_update_wtf.data
 
             valeur_update_dictionnaire = {
-                "value_rue": rue,
-                "value_cp": cp,
-                "value_ville": ville,
-                "value_etage": etage,
-                "value_pays": pays,
-                "value_date_debut": date_debut,
-                "value_date_fin": date_fin,
-                "value_statut": statut,
-                "value_id_employe": id_employe_update
+                "value_nom": nom,
+                "value_prenom": prenom,
+                "value_notoriete": notoriete,
             }
 
-            str_sql_update_employe = """UPDATE t_employe SET Rue = %(value_rue)s, 
-                                        Cp = %(value_cp)s, Ville = %(value_ville)s, 
-                                        Etage = %(value_etage)s, Pays = %(value_pays)s, 
-                                        Date_debut = %(value_date_debut)s, 
-                                        Date_fin = %(value_date_fin)s, 
-                                        statut = %(value_statut)s 
-                                        WHERE ID_employe = %(value_id_employe)s"""
+            str_sql_update_employe = """UPDATE t_employe SET Nom = %(value_nom)s, Prenom = %(value_prenom)s, Notoriété = %(value_notoriete)s WHERE id_employe = %(value_id_employe)s"""
             with DBconnection() as mconn_bd:
                 mconn_bd.execute(str_sql_update_employe, valeur_update_dictionnaire)
 
@@ -208,21 +182,20 @@ def employe_update_wtf():
             valeur_select_dictionnaire = {"value_id_employe": id_employe_update}
             with DBconnection() as mybd_conn:
                 mybd_conn.execute(str_sql_id_employe, valeur_select_dictionnaire)
-            data_employe = mybd_conn.fetchone()
+                data_employe = mybd_conn.fetchone()
 
-            form_update.nom_rue_update_wtf.data = data_employe["Rue"]
-            form_update.cp_update_wtf.data = data_employe["Cp"]
-            form_update.ville_update_wtf.data = data_employe["Ville"]
-            form_update.etage_update_wtf.data = data_employe["Etage"]
-            form_update.pays_update_wtf.data = data_employe["Pays"]
-            form_update.date_debut_update_wtf.data = data_employe["Date_debut"]
-            form_update.date_fin_update_wtf.data = data_employe["Date_fin"]
-            form_update.statut_update_wtf.data = data_employe["Statut"]
+            if data_employe:
+                form_update.nom_update_wtf.data = data_employe["Nom"]
+                form_update.prenom_update_wtf.data = data_employe["Prenom"]
+                form_update.notoriete_update_wtf.data = data_employe["Notoriete"]
+            else:
+                flash(f"L'employé avec l'id {id_employe_update} n'existe pas.", "warning")
+                return redirect(url_for('employe_afficher'))
 
     except Exception as Exception_employe_update_wtf:
         raise ExceptionEmployeUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
-                                      f"{employe_update_wtf.__name__} ; "
-                                      f"{Exception_employe_update_wtf}")
+                                        f"{employe_update_wtf.__name__} ; "
+                                        f"{Exception_employe_update_wtf}")
 
     return render_template("employe/employe_update_wtf.html", form_update=form_update)
 

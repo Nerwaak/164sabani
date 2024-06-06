@@ -35,11 +35,11 @@
                      <p>
                         {{ form.etage.label }}<br>
                         {{ form.etage(size=32) }}<br>
-                        {% for error in form.ville.errors %}
+                        {% for error in form.etage.errors %}
                             <span style="color: red;">[{{ error }}]</span>
                         {% endfor %}
                     </p>
-                      <p>
+                       <p>
                         {{ form.pays.label }}<br>
                         {{ form.pays(size=32) }}<br>
                         {% for error in form.pays.errors %}

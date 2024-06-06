@@ -11,34 +11,28 @@ from wtforms.validators import Regexp
 
 
 class FormWTFAjouteremploye(FlaskForm):
+
     employe_ajouter_regexp = "^(?!.*['\-\s]{2,})([A-Za-zÀ-ÖØ-öø-ÿ0-9]+['\- ]?)*[A-Za-zÀ-ÖØ-öø-ÿ0-9]+$"
-    rue = StringField("Rue", validators=[Length(min=2, max=50, message="min 2 max 50"),
+    nom = StringField("Nom", validators=[Length(min=2, max=50, message="min 2 max 50"),
                                          Regexp( employe_ajouter_regexp,
                                                 message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
 
-    cp = StringField("Cp", validators=[Length(min=2, max=50, message="min 2 max 50"),
+    prenom = StringField("Prenom", validators=[Length(min=2, max=50, message="min 2 max 50"),
                                          Regexp( employe_ajouter_regexp,
                                                 message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
 
-    ville = StringField("Ville", validators=[Length(min=2, max=50, message="min 2 max 50"),
+    date_de_naissance = StringField("Date de naissance", validators=[Length(min=2, max=50, message="min 2 max 50"),
+                                               Regexp(employe_ajouter_regexp,
+                                                      message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
+
+    numero_avs = StringField("Numero AVS", validators=[Length(min=2, max=50, message="min 2 max 50"),
+                                               Regexp(employe_ajouter_regexp,
+                                                      message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
+
+    notoriete = StringField("Notoriete", validators=[Length(min=2, max=50, message="min 2 max 50"),
                                              Regexp( employe_ajouter_regexp,
                                                     message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
 
-    etage = StringField("Etage", validators=[Length(min=1, max=50, message="min 2 max 50"),
-                                             Regexp( employe_ajouter_regexp,
-                                                    message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
-
-    pays = StringField("Pays", validators=[Length(min=2, max=50, message="min 2 max 50"),
-                                             Regexp( employe_ajouter_regexp,
-                                                    message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
-
-    date_debut = DateField("Date de début", format='%Y-%m-%d', validators=[DataRequired(message="Date requise")])
-
-    date_fin = DateField("Date de fin", format='%Y-%m-%d', validators=[DataRequired(message="Date requise")])
-
-    statut = StringField("Statut", validators=[Length(min=2, max=50, message="min 2 max 50"),
-                                           Regexp( employe_ajouter_regexp,
-                                                  message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
     submit = SubmitField("Enregistrer le employe")
 
 
@@ -47,34 +41,19 @@ from wtforms import StringField, IntegerField, DateField, SelectField, SubmitFie
 from wtforms.validators import DataRequired, Length, Regexp, InputRequired
 
 class FormWTFUpdateemploye(FlaskForm):
+
     employe_update_regexp = "^(?!.*['\-\s]{2,})([A-Za-zÀ-ÖØ-öø-ÿ0-9]+['\- ]?)*[A-Za-zÀ-ÖØ-öø-ÿ0-9]+$"
-    nom_rue_update_wtf = StringField("Rue", validators=[Length(min=2, max=20, message="min 2 max 20"),
+    nom_update_wtf = StringField("Nom", validators=[Length(min=2, max=20, message="min 2 max 20"),
                                                         Regexp(employe_update_regexp,
                                                                message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
 
-    cp_update_wtf = StringField("Cp", validators=[Length(min=2, max=20, message="min 2 max 20"),
+    prenom_update_wtf = StringField("Prenom", validators=[Length(min=2, max=20, message="min 2 max 20"),
                                                   Regexp(employe_update_regexp,
                                                          message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
 
-    ville_update_wtf = StringField("Ville", validators=[Length(min=2, max=20, message="min 2 max 20"),
+    notoriete_update_wtf = StringField("Notoriete", validators=[Length(min=2, max=20, message="min 2 max 20"),
                                                         Regexp(employe_update_regexp,
                                                                message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
-
-    etage_update_wtf = IntegerField("Etage", validators=[DataRequired()])
-
-    pays_update_wtf = StringField("Pays", validators=[Length(min=2, max=50, message="min 2 max 50"),
-                                                      Regexp(employe_update_regexp,
-                                                             message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
-
-    date_debut_update_wtf = DateField("Date de début", validators=[InputRequired("Date obligatoire"),
-                                                                   DataRequired("Date non valide")])
-
-    date_fin_update_wtf = DateField("Date de fin", validators=[InputRequired("Date obligatoire"),
-                                                               DataRequired("Date non valide")])
-
-    statut_update_wtf = StringField("Statut", validators=[Length(min=2, max=20, message="min 2 max 20"),
-                                                          Regexp(employe_update_regexp,
-                                                                 message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
 
     submit = SubmitField("Update employe")
 

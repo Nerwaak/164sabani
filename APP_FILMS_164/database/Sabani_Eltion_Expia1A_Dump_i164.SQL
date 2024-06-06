@@ -1,5 +1,5 @@
 -- OM 2021.02.17
--- FICHIER MYSQL POUR FAIRE FONCTIONNER LES EXEMPLES
+-- FICHIER MYSQL POUR FAIRE FONCTIONNER LES EXEMPLE
 -- DE REQUETES MYSQL
 -- Database: sabani_eltion_expia1a_mpd_gestion_chantier_electricite_i164
 

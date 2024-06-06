@@ -1,21 +1,146 @@
 {% extends "base.html" %}
-{% block title %} Homepage FILMS {% endblock %}
+{% block title %} Homepage CHANTIER {% endblock %}
 {% block body %}
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-md-12">
-			<h3>
-				Démo complète du 2023.03.25
-			</h3>
-			<h3>
-				CRUD sur 3 tables autour des films et leurs genres associés<br>
-			</h3>
-			<ul>
-				<li class="list-item">
-					Lire le readme.md
-				</li>
-			</ul>
-		</div>
-	</div>
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #343a40; /* gris foncé */
+        overflow: auto; /* Permettre le défilement de la page */
+    }
+    .bg, .bg-secondary {
+        height: 100vh; /* Chaque section prend la hauteur de la fenêtre */
+        width: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Centrer verticalement */
+        align-items: center; /* Centrer horizontalement */
+    }
+    .bg {
+        background-image: url('{{ url_for('static', filename='images/suivi-chantier.jpg') }}');
+    }
+    .bg-secondary {
+        background-image: url('{{ url_for('static', filename='images/electricien.jpg') }}');
+    }
+    .navbar {
+        background-color: #6c757d; /* gris clair */
+    }
+    .title-content {
+        color: #ffffff; /* couleur du texte blanc */
+        background-color: rgba(52, 58, 64, 0.9); /* gris foncé */
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        width: 40%;
+        margin: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        opacity: 0; /* Initialement invisible */
+        transform: translateY(20px); /* Déplacement initial pour l'effet */
+        transition: opacity 0.6s, transform 0.6s; /* Transition pour l'effet */
+    }
+    .button-container {
+        color: #ffffff; /* couleur du texte blanc */
+        background-color: rgba(52, 58, 64, 0.9); /* gris foncé */
+        padding: 10px;
+        border-radius: 10px;
+        text-align: center;
+        width: 60%;
+        margin: 20px auto; /* Centrer horizontalement */
+        display: flex;
+        justify-content: space-around; /* Espacer les boutons */
+        opacity: 0; /* Initialement invisible */
+        transform: translateY(20px); /* Déplacement initial pour l'effet */
+        transition: opacity 0.6s, transform 0.6s; /* Transition pour l'effet */
+    }
+    .button-container .btn {
+        color: #ffffff !important; /* Couleur du texte blanc */
+        background-color: #6c757d; /* Gris clair */
+        border: none;
+    }
+    .button-container .btn:hover {
+        background-color: #5a6268; /* Gris un peu plus foncé */
+    }
+    .main-content, .third-content {
+        color: #ffffff; /* couleur du texte blanc */
+        background-color: rgba(52, 58, 64, 0.9); /* gris foncé */
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        width: 40%;
+        margin: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .main-content {
+        margin-top: 60px; /* Aligne à la même hauteur que la première case */
+        align-self: flex-start; /* Aligne à gauche */
+    }
+    .third-content {
+        margin-top: 60px; /* Écart entre les cases */
+        align-self: flex-start; /* Aligne à gauche */
+    }
+    .title-content h3 {
+        color: #ffffff; /* Force la couleur du texte en blanc */
+        text-shadow: none; /* Supprime toute ombre de texte qui pourrait donner un effet bleu */
+    }
+    .title-content h3, .main-content p, .third-content p {
+        margin: 0;
+        line-height: 1.6;
+    }
+    .footer-dark {
+        background-color: #343a40; /* gris foncé */
+        color: #ffffff; /* couleur du texte blanc pour contraste */
+    }
+    .visible {
+        opacity: 1; /* Devient visible */
+        transform: translateY(0); /* Reprend sa position initiale */
+    }
+    @keyframes fadeInUp {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .fadeInUp {
+        animation: fadeInUp 1s ease-out forwards;
+    }
+</style>
+
+<div class="bg">
+    <div class="title-content fadeInUp">
+        <h3>
+            Base de Donnée de la Gestion des chantiers d'Électricité
+        </h3>
+    </div>
+    <div class="button-container fadeInUp">
+        <a class="btn btn-primary" href="{{ url_for('genres_afficher', order_by='ASC', id_genre_sel=0) }}">Chantier</a>
+        <a class="btn btn-primary" href="{{ url_for('employe_afficher', order_by='ASC', id_employe_sel=0) }}">Employe</a>
+        <a class="btn btn-primary" href="{{ url_for('employe_chantier_afficher', order_by='ASC', id_employe_sel=0) }}">Chantier/Employe</a>
+    </div>
 </div>
+
+<div class="bg-secondary">
+    <div class="main-content">
+        <p>
+            La gestion d'un chantier en électricité comprend la planification, la préparation, et
+            l'exécution des travaux électriques. Elle commence par l'élaboration de plans détaillés, ils
+            vont avoir un budget pour des matériaux, des fournisseurs, des taches pour chaque
+            chantier, des employés avec des grades différents et etc., une très grande organisation doit
+            être mise en place.
+        </p>
+    </div>
+    <div class="third-content">
+        <p>
+            Cette base de données a été conçue pour optimiser la gestion des chantiers de manière simple et efficace. En comparaison avec d'autres méthodes telles qu'Excel, son utilisation permet de réduire significativement le temps de gestion, permettant ainsi aux électriciens de se concentrer davantage sur les aspects techniques complexes de leur métier, et ainsi augmenter la productivité.
+        </p>
+    </div>
+</div>
+
 {% endblock %}

@@ -112,7 +112,7 @@ def employe_ajouter_wtf():
                     "value_prenom": prenom,
                     "value_date_de_naissance": date_de_naissance,
                     "value_numero_avs": numero_avs,
-                    "value_notoriété": notoriete,
+                    "value_notoriete": notoriete,
                 }
                 print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
 
@@ -329,7 +329,7 @@ def employe_chantier_afficher(order_by, id_employe_sel):
                                         e.Prenom, 
                                         e.Date_de_naissance,
                                         e.Numero_AVS,
-                                        e.Notoriété, 
+                                        e.Notoriete, 
                                         e.Date_de_naissance
                                     FROM 
                                         t_chantier c
@@ -363,7 +363,7 @@ def employe_chantier_afficher(order_by, id_employe_sel):
                                         e.Prenom, 
                                         e.Date_de_naissance,
                                         e.Numero_AVS,
-                                        e.Notoriété, 
+                                        e.Notoriete, 
                                         e.Date_de_naissance
                                     FROM 
                                         t_chantier c
@@ -392,7 +392,7 @@ def employe_chantier_afficher(order_by, id_employe_sel):
                                         e.Prenom, 
                                         e.Date_de_naissance,
                                         e.Numero_AVS,
-                                        e.Notoriété, 
+                                        e.Notoriete, 
                                         e.Date_de_naissance
                                     FROM 
                                         t_chantier c

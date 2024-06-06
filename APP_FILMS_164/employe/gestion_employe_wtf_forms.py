@@ -29,7 +29,7 @@ class FormWTFAjouteremploye(FlaskForm):
                                                Regexp(employe_ajouter_regexp,
                                                       message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
 
-    notoriete = StringField("Notoriete", validators=[Length(min=2, max=50, message="min 2 max 50"),
+    notoriete = StringField("Notoriété", validators=[Length(min=2, max=50, message="min 2 max 50"),
                                              Regexp( employe_ajouter_regexp,
                                                     message="Pas de caractères spéciaux, d'espace à double, de double apostrophe, de double trait union")])
 

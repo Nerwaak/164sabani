@@ -69,19 +69,21 @@ class FormWTFUpdateemploye(FlaskForm):
 
 
 
-class FormWTFDeleteemploye(FlaskForm):
+class FormWTFDeleteEmploye(FlaskForm):
     """
-        Dans le formulaire "genre_delete_wtf.html"
+        Dans le formulaire "employe_delete_wtf.html"
 
-        nom_genre_delete_wtf : Champ qui reçoit la valeur du genre, lecture seule. (readonly=true)
+        nom_employe_delete_wtf : Champ qui reçoit la valeur de l'employé, lecture seule. (readonly=true)
         submit_btn_del : Bouton d'effacement "DEFINITIF".
-        submit_btn_conf_del : Bouton de confirmation pour effacer un "genre".
-        submit_btn_annuler : Bouton qui permet d'afficher la table "t_genre".
+        submit_btn_conf_del : Bouton de confirmation pour effacer un "employé".
+        submit_btn_annuler : Bouton qui permet d'afficher la table "t_employe".
     """
-    nom_genre_delete_wtf = StringField("Effacer ce genre")
-    submit_btn_del = SubmitField("Effacer genre")
+    nom_employe_delete_wtf = StringField("Effacer cet Employé")
+    submit_btn_del = SubmitField("Effacer Employé")
     submit_btn_conf_del = SubmitField("Etes-vous sur d'effacer ?")
     submit_btn_annuler = SubmitField("Annuler")
+
+#Employe/chantier
 
 class FormWTFAjouterLiaisonEmployeChantier(FlaskForm):
     id_employe_wtf = SelectField('Employé', validators=[DataRequired()], coerce=int)

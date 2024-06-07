@@ -14,7 +14,7 @@ from APP_FILMS_164.database.database_tools import DBconnection
 from APP_FILMS_164.erreurs.exceptions import *
 from APP_FILMS_164.employe.gestion_employe_wtf_forms import FormWTFAjouteremploye, FormWTFAjouterLiaisonEmployeChantier, \
     FormWTFUpdateLiaisonEmployeChantier
-from APP_FILMS_164.employe.gestion_employe_wtf_forms import FormWTFDeleteemploye
+from APP_FILMS_164.employe.gestion_employe_wtf_forms import FormWTFDeleteEmploye
 from APP_FILMS_164.employe.gestion_employe_wtf_forms import FormWTFUpdateemploye
 
 """
@@ -225,96 +225,92 @@ def employe_update_wtf():
 
 @app.route("/employe_delete", methods=['GET', 'POST'])
 def employe_delete_wtf():
-    data_films_attribue_employe_delete = None
+    data_chantiers_associes = None
     btn_submit_del = None
-    # L'utilisateur vient de cliquer sur le bouton "DELETE". Récupère la valeur de "id_employe"
-    id_employe_delete = request.values['id_employe_btn_delete_html']
+    id_employe_delete = request.args.get('id_employe_btn_delete_html')
 
-    # Objet formulaire pour effacer le employe sélectionné.
-    form_delete = FormWTFDeleteemploye()
+    form_delete = FormWTFDeleteEmploye()
     try:
-        print(" on submit ", form_delete.validate_on_submit())
+        print("On submit ", form_delete.validate_on_submit())
         if request.method == "POST" and form_delete.validate_on_submit():
-
             if form_delete.submit_btn_annuler.data:
                 return redirect(url_for("employe_afficher", order_by="ASC", id_employe_sel=0))
 
             if form_delete.submit_btn_conf_del.data:
-                # Récupère les données afin d'afficher à nouveau
-                # le formulaire "employe/employe_delete_wtf.html" lorsque le bouton "Etes-vous sur d'effacer ?" est cliqué.
-                data_films_attribue_employe_delete = session['data_films_attribue_employe_delete']
-                print("data_films_attribue_employe_delete ", data_films_attribue_employe_delete)
-
-                flash(f"Effacer le employe de façon définitive de la BD !!!", "danger")
-                # L'utilisateur vient de cliquer sur le bouton de confirmation pour effacer...
-                # On affiche le bouton "Effacer employe" qui va irrémédiablement EFFACER le employe
+                flash(f"Effacer l'Employé de façon définitive de la BD !!!", "danger")
                 btn_submit_del = True
 
             if form_delete.submit_btn_del.data:
+                if not id_employe_delete:
+                    raise ValueError("id_employe_delete is None")
+
                 valeur_delete_dictionnaire = {"value_id_employe": id_employe_delete}
                 print("valeur_delete_dictionnaire ", valeur_delete_dictionnaire)
 
-                str_sql_delete_films_employe = """DELETE FROM t_employe_film WHERE fk_employe = %(value_id_employe)s"""
-                str_sql_delete_idemploye = """DELETE FROM t_employe WHERE id_employe = %(value_id_employe)s"""
-                # Manière brutale d'effacer d'abord la "fk_employe", même si elle n'existe pas dans la "t_employe_film"
-                # Ensuite on peut effacer le employe vu qu'il n'est plus "lié" (INNODB) dans la "t_employe_film"
+                # Suppression des relations chantier-employé
+                str_sql_delete_employe_chantier = """DELETE FROM t_employe_chantier WHERE FK_employe_chantier = %(value_id_employe)s"""
+                # Suppression de l'employé lui-même
+                str_sql_delete_employe = """DELETE FROM t_employe WHERE ID_employe = %(value_id_employe)s"""
+
                 with DBconnection() as mconn_bd:
-                    mconn_bd.execute(str_sql_delete_films_employe, valeur_delete_dictionnaire)
-                    mconn_bd.execute(str_sql_delete_idemploye, valeur_delete_dictionnaire)
+                    mconn_bd.execute(str_sql_delete_employe_chantier, valeur_delete_dictionnaire)
+                    mconn_bd.execute(str_sql_delete_employe, valeur_delete_dictionnaire)
 
-                flash(f"employe définitivement effacé !!", "success")
-                print(f"employe définitivement effacé !!")
+                flash(f"Employé définitivement effacé !!", "success")
+                print(f"Employé définitivement effacé !!")
 
-                # afficher les données
                 return redirect(url_for('employe_afficher', order_by="ASC", id_employe_sel=0))
 
         if request.method == "GET":
+            if not id_employe_delete:
+                raise ValueError("id_employe_delete is None")
+
             valeur_select_dictionnaire = {"value_id_employe": id_employe_delete}
             print(id_employe_delete, type(id_employe_delete))
 
-            # Requête qui affiche tous les films_employe qui ont le employe que l'utilisateur veut effacer
-            str_sql_employe_films_delete = """SELECT * FROM t_employe_materiel 
-                                            INNER JOIN t_film ON t_employe_film.fk_film = t_film.id_film
-                                            INNER JOIN t_employe ON t_employe_film.fk_employe = t_employe.id_employe
-                                            WHERE fk_employe = %(value_id_employe)s"""
+            # Récupérer les détails de l'employé
+            str_sql_id_employe = "SELECT ID_employe, Nom FROM t_employe WHERE ID_employe = %(value_id_employe)s"
+            with DBconnection() as mybd_conn:
+                mybd_conn.execute(str_sql_id_employe, valeur_select_dictionnaire)
+                data_nom_employe = mybd_conn.fetchone()
+                if data_nom_employe is None:
+                    raise ValueError(f"No data found for ID_employe = {id_employe_delete}")
 
-            with DBconnection() as mydb_conn:
-                mydb_conn.execute(str_sql_employe_films_delete, valeur_select_dictionnaire)
-                data_films_attribue_employe_delete = mydb_conn.fetchall()
-                print("data_films_attribue_employe_delete...", data_films_attribue_employe_delete)
+                print("data_nom_employe ", data_nom_employe, " type ", type(data_nom_employe), " employe ", data_nom_employe["Nom"])
 
-                # Nécessaire pour mémoriser les données afin d'afficher à nouveau
-                # le formulaire "employe/employe_delete_wtf.html" lorsque le bouton "Etes-vous sur d'effacer ?" est cliqué.
-                session['data_films_attribue_employe_delete'] = data_films_attribue_employe_delete
+            form_delete.nom_employe_delete_wtf.data = data_nom_employe["Nom"]
 
-                # Opération sur la BD pour récupérer "id_employe" et "intitule_employe" de la "t_employe"
-                str_sql_id_employe = "SELECT * FROM t_employe WHERE ID_employe = %(value_id_employe)s"
+            # Récupérer les chantiers associés à l'employé
+            str_sql_chantiers_associes = """
+                SELECT Rue FROM t_chantier
+                INNER JOIN t_employe_chantier ON t_chantier.ID_Chantier = t_employe_chantier.FK_chantier_employe
+                WHERE FK_employe_chantier = %(value_id_employe)s
+            """
+            with DBconnection() as mybd_conn:
+                mybd_conn.execute(str_sql_chantiers_associes, valeur_select_dictionnaire)
+                data_chantiers_associes = mybd_conn.fetchall()
+                print("data_chantiers_associes ", data_chantiers_associes)
 
-                mydb_conn.execute(str_sql_id_employe, valeur_select_dictionnaire)
-                # Une seule valeur est suffisante "fetchone()",
-                # vu qu'il n'y a qu'un seul champ "nom employe" pour l'action DELETE
-                data_nom_employe = mydb_conn.fetchone()
-                print("data_nom_employe ", data_nom_employe, " type ", type(data_nom_employe), " employe ",
-                      data_nom_employe["intitule_employe"])
-
-            # Afficher la valeur sélectionnée dans le champ du formulaire "employe_delete_wtf.html"
-            form_delete.nom_employe_delete_wtf.data = data_nom_employe["intitule_employe"]
-
-            # Le bouton pour l'action "DELETE" dans le form. "employe_delete_wtf.html" est caché.
             btn_submit_del = False
 
+    except KeyError as e:
+        print(f"KeyError: {str(e)}")
+        flash(f"Erreur interne: Clé manquante {str(e)}", "danger")
+        return redirect(url_for("employe_afficher", order_by="ASC", id_employe_sel=0))
     except Exception as Exception_employe_delete_wtf:
+        print(f"Exception: {str(Exception_employe_delete_wtf)}")
         raise ExceptionEmployeDeleteWtf(f"fichier : {Path(__file__).name}  ;  "
-                                      f"{employe_delete_wtf.__name__} ; "
-                                      f"{Exception_employe_delete_wtf}")
+                                         f"{employe_delete_wtf.__name__} ; "
+                                         f"{Exception_employe_delete_wtf}")
 
     return render_template("employe/employe_delete_wtf.html",
                            form_delete=form_delete,
                            btn_submit_del=btn_submit_del,
-                           data_films_associes=data_films_attribue_employe_delete)
+                           data_chantiers_associes=data_chantiers_associes)
 
 
 
+#Employe/Chantier
 
 @app.route("/employe_chantier_afficher/<string:order_by>/<int:id_employe_sel>", methods=['GET', 'POST'])
 def employe_chantier_afficher(order_by, id_employe_sel):

@@ -117,11 +117,11 @@ class ExceptionEmployeChantierAfficher(Base):
     pass
 
 
-class ExceptionEditChantierEmployeelected(Base):
+class ExceptionEditChantierEmployeselected(Base):
     pass
 
 
-class ExceptionUpdateChantierEmployeelected(Base):
+class ExceptionUpdateChantierEmployeselected(Base):
     pass
 
 

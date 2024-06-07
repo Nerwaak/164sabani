@@ -71,3 +71,20 @@ class FormWTFDeleteemploye(FlaskForm):
     submit_btn_del = SubmitField("Effacer genre")
     submit_btn_conf_del = SubmitField("Etes-vous sur d'effacer ?")
     submit_btn_annuler = SubmitField("Annuler")
+
+class FormWTFAjouterLiaisonEmployeChantier(FlaskForm):
+    id_employe_wtf = SelectField('Employé', validators=[DataRequired()], coerce=int)
+    id_chantier_wtf = SelectField('Chantier', validators=[DataRequired()], coerce=int)
+    submit = SubmitField('Ajouter Liaison')
+
+class FormWTFUpdateLiaisonEmployeChantier(FlaskForm):
+    id_employe_wtf = SelectField('Employé', validators=[DataRequired()], coerce=int)
+    id_chantier_wtf = SelectField('Chantier', validators=[DataRequired()], coerce=int)
+    submit = SubmitField('Mettre à jour Liaison')
+
+
+
+
+
+
+

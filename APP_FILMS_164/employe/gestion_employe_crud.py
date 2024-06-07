@@ -12,7 +12,8 @@ from flask import url_for
 from APP_FILMS_164 import app
 from APP_FILMS_164.database.database_tools import DBconnection
 from APP_FILMS_164.erreurs.exceptions import *
-from APP_FILMS_164.employe.gestion_employe_wtf_forms import FormWTFAjouteremploye
+from APP_FILMS_164.employe.gestion_employe_wtf_forms import FormWTFAjouteremploye, FormWTFAjouterLiaisonEmployeChantier, \
+    FormWTFUpdateLiaisonEmployeChantier
 from APP_FILMS_164.employe.gestion_employe_wtf_forms import FormWTFDeleteemploye
 from APP_FILMS_164.employe.gestion_employe_wtf_forms import FormWTFUpdateemploye
 
@@ -427,3 +428,108 @@ def employe_chantier_afficher(order_by, id_employe_sel):
 
     # Envoie la page "HTML" au serveur.
     return render_template("employe/employe_chantier_afficher.html", data=data_employe)
+
+@app.route("/employe_chantier_ajouter", methods=['GET', 'POST'])
+def employe_chantier_ajouter():
+    form = FormWTFAjouterLiaisonEmployeChantier()
+
+    # Charger les options pour les SelectField
+    try:
+        with DBconnection() as mconn_bd:
+            strsql_employe = "SELECT ID_employe, nom FROM t_employe"
+            strsql_chantier = "SELECT ID_Chantier, rue FROM t_chantier"
+            mconn_bd.execute(strsql_employe)
+            employes = mconn_bd.fetchall()
+            mconn_bd.execute(strsql_chantier)
+            chantiers = mconn_bd.fetchall()
+
+            form.id_employe_wtf.choices = [(employe["ID_employe"], employe["nom"]) for employe in employes]
+            form.id_chantier_wtf.choices = [(chantier["ID_Chantier"], chantier["rue"]) for chantier in chantiers]
+
+    except Exception as e:
+        flash(f"Erreur lors du chargement des options : {str(e)}", "danger")
+
+    if request.method == "POST":
+        print("Form data received:", form.data)
+        if form.validate_on_submit():
+            id_employe = form.id_employe_wtf.data
+            id_chantier = form.id_chantier_wtf.data
+
+            # Vérification des valeurs
+            print(f"id_employe: {id_employe}, id_chantier: {id_chantier}")
+
+            valeurs_insertion_dictionnaire = {"FK_employe_chantier": id_employe, "FK_chantier_employe": id_chantier}
+            strsql_insert_liaison = """INSERT INTO t_employe_chantier (FK_employe_chantier, FK_chantier_employe) 
+                                       VALUES (%(FK_employe_chantier)s, %(FK_chantier_employe)s)"""
+            try:
+                with DBconnection() as mconn_bd:
+                    mconn_bd.execute(strsql_insert_liaison, valeurs_insertion_dictionnaire)
+                flash("Liaison ajoutée avec succès !!", "success")
+                return redirect(url_for('employe_chantier_afficher', order_by='ASC', id_employe_sel=0))
+            except Exception as e:
+                flash(f"Erreur lors de l'ajout de la liaison: {str(e)}", "danger")
+        else:
+            flash("Formulaire non validé. Vérifiez les champs.", "warning")
+            print(form.errors)  # Affiche les erreurs de validation
+
+    return render_template("employe/employe_chantier_ajouter_wtf.html", form=form)
+
+
+
+@app.route("/employe_chantier_update/<int:id_liaison>", methods=['GET', 'POST'])
+def employe_chantier_update(id_liaison):
+    form = FormWTFUpdateLiaisonEmployeChantier()
+
+    # Charger les options pour les SelectField
+    try:
+        with DBconnection() as mconn_bd:
+            strsql_employe = "SELECT ID_employe, nom FROM t_employe"
+            strsql_chantier = "SELECT ID_Chantier, rue FROM t_chantier"
+            mconn_bd.execute(strsql_employe)
+            employes = mconn_bd.fetchall()
+            mconn_bd.execute(strsql_chantier)
+            chantiers = mconn_bd.fetchall()
+
+            form.id_employe_wtf.choices = [(employe["ID_employe"], employe["nom"]) for employe in employes]
+            form.id_chantier_wtf.choices = [(chantier["ID_Chantier"], chantier["rue"]) for chantier in chantiers]
+
+            # Pré-remplir les champs avec les valeurs actuelles
+            if request.method == "GET":
+                strsql_liaison = """SELECT FK_employe_chantier, FK_chantier_employe FROM t_employe_chantier WHERE ID_employe_chantier = %(id_liaison)s"""
+                mconn_bd.execute(strsql_liaison, {"id_liaison": id_liaison})
+                liaison = mconn_bd.fetchone()
+                if liaison:
+                    form.id_employe_wtf.data = liaison["FK_employe_chantier"]
+                    form.id_chantier_wtf.data = liaison["FK_chantier_employe"]
+
+    except Exception as e:
+        flash(f"Erreur lors du chargement des options : {str(e)}", "danger")
+
+    if request.method == "POST" and form.validate_on_submit():
+        id_employe = form.id_employe_wtf.data
+        id_chantier = form.id_chantier_wtf.data
+
+        # Vérification des valeurs
+        print(f"id_employe: {id_employe}, id_chantier: {id_chantier}")
+
+        valeurs_update_dictionnaire = {
+            "FK_employe_chantier": id_employe,
+            "FK_chantier_employe": id_chantier,
+            "id_liaison": id_liaison
+        }
+        strsql_update_liaison = """UPDATE t_employe_chantier
+                                   SET FK_employe_chantier = %(FK_employe_chantier)s, FK_chantier_employe = %(FK_chantier_employe)s
+                                   WHERE ID_employe_chantier = %(id_liaison)s"""
+        try:
+            with DBconnection() as mconn_bd:
+                mconn_bd.execute(strsql_update_liaison, valeurs_update_dictionnaire)
+            flash("Liaison mise à jour avec succès !!", "success")
+            return redirect(url_for('employe_chantier_afficher', order_by='ASC', id_employe_sel=0))
+        except Exception as e:
+            flash(f"Erreur lors de la mise à jour de la liaison: {str(e)}", "danger")
+    else:
+        if request.method == "POST":
+            flash("Formulaire non validé. Vérifiez les champs.", "warning")
+            print(form.errors)  # Affiche les erreurs de validation
+
+    return render_template("employe/employe_chantier_update_wtf.html", form=form)

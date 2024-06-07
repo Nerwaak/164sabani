@@ -44,7 +44,7 @@ try:
     from APP_FILMS_164.genres import gestion_genres_crud
     from APP_FILMS_164.demos_om_164 import routes_demos
 
-    from APP_FILMS_164.films_genres import gestion_films_genres_crud
+
     from APP_FILMS_164.erreurs import msg_avertissements
 
     from APP_FILMS_164.employe import gestion_employe_crud

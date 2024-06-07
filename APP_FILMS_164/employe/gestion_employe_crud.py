@@ -13,7 +13,7 @@ from APP_FILMS_164 import app
 from APP_FILMS_164.database.database_tools import DBconnection
 from APP_FILMS_164.erreurs.exceptions import *
 from APP_FILMS_164.employe.gestion_employe_wtf_forms import FormWTFAjouteremploye, FormWTFAjouterLiaisonEmployeChantier, \
-    FormWTFUpdateLiaisonEmployeChantier
+    FormWTFUpdateLiaisonEmployeChantier, FormWTFDeleteLiaisonEmployeChantier
 from APP_FILMS_164.employe.gestion_employe_wtf_forms import FormWTFDeleteEmploye
 from APP_FILMS_164.employe.gestion_employe_wtf_forms import FormWTFUpdateemploye
 
@@ -537,3 +537,61 @@ def employe_chantier_update(id_liaison):
             print(form.errors)  # Affiche les erreurs de validation
 
     return render_template("employe/employe_chantier_update_wtf.html", form=form)
+
+@app.route("/employe_chantier_delete", methods=['GET', 'POST'])
+def employe_chantier_delete():
+    data_liaison_delete = None
+    try:
+        # Récupération de la valeur de "ID_employe_chantier" du formulaire HTML
+        ID_employe_chantier_delete = request.values.get('ID_employe_chantier_btn_delete_html')
+
+        # Si l'ID de la liaison n'est pas fourni, afficher un message d'erreur
+        if not ID_employe_chantier_delete:
+            flash("Erreur : l'identifiant de la liaison n'a pas été fourni.", "danger")
+            return redirect(url_for('employe_chantier_afficher', order_by="ASC",
+                                    id_employe_sel=0))
+
+        # Objet formulaire pour effacer la liaison
+        form_delete = FormWTFDeleteLiaisonEmployeChantier()
+
+        if request.method == "POST" and form_delete.validate_on_submit():
+            if form_delete.submit_btn_annuler.data:
+                return redirect(url_for("employe_chantier_afficher", order_by="ASC",
+                                        id_employe_sel=0))
+
+            if form_delete.submit_btn_del.data:
+                valeur_delete_dictionnaire = {
+                    "ID_employe_chantier": ID_employe_chantier_delete}
+
+                str_sql_delete_liaison = """DELETE FROM t_employe_chantier WHERE ID_employe_chantier = %(ID_employe_chantier)s"""
+                with DBconnection() as mconn_bd:
+                    mconn_bd.execute(str_sql_delete_liaison, valeur_delete_dictionnaire)
+
+                flash("Liaison définitivement effacée !!", "success")
+                return redirect(url_for('employe_chantier_afficher', order_by="ASC",
+                                        id_employe_sel=0))
+
+        if request.method == "GET":
+            valeur_select_dictionnaire = {"ID_employe_chantier": ID_employe_chantier_delete}
+
+            str_sql_select_liaison = """SELECT ID_employe_chantier, FK_employe_chantier, FK_chantier_employe
+                                        FROM t_employe_chantier 
+                                        WHERE ID_employe_chantier = %(ID_employe_chantier)s"""
+            with DBconnection() as mydb_conn:
+                mydb_conn.execute(str_sql_select_liaison, valeur_select_dictionnaire)
+                data_liaison = mydb_conn.fetchone()
+
+                session['data_liaison_delete'] = data_liaison
+
+            form_delete.id_liaison_wtf.data = data_liaison["ID_employe_chantier"]
+
+    except KeyError as key_error:
+        flash(f"Erreur : clé {key_error} non trouvée dans la requête.", "danger")
+        return redirect(url_for('employe_chantier_afficher', order_by="ASC",
+                                id_employe_sel=0))
+    except Exception as e:
+        flash(f"Erreur lors de la suppression de la liaison : {str(e)}", "danger")
+        print(e)
+
+    return render_template("employe/employe_chantier_delete_wtf.html",
+                           form_delete=form_delete)

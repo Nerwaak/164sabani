@@ -166,7 +166,7 @@ CREATE TABLE IF NOT EXISTS `t_employe_chantier` (
   CONSTRAINT `FK_t_chantier_employe_t_employe` FOREIGN KEY (`FK_employe_chantier`) REFERENCES `t_employe` (`ID_Employe`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Listage des données de la table sabani_eltion_expi1a_dump_i164.t_employe_chantier : ~11 rows (environ)
+-- Listage des données de la table sabani_eltion_expi1a_dump_i164.t_employe_chantier : ~10 rows (environ)
 INSERT INTO `t_employe_chantier` (`ID_employe_chantier`, `FK_employe_chantier`, `FK_chantier_employe`) VALUES
 	(1, 1, 1),
 	(2, 2, 1),

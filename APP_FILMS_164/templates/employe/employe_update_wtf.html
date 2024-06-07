@@ -10,6 +10,7 @@
             <form action="" method="POST" novalidate>
                 <!-- Protection contre les attaques Cross-Site Request Forgery (CSRF) -->
                 {{ form_update.hidden_tag() }}
+                <input type="hidden" name="id_employe_btn_edit_html" value="{{ request.args.get('id_employe_btn_edit_html') }}">
                 <div class="form-group">
                     <p>
                         {{ form_update.nom_update_wtf.label }}<br>
@@ -22,6 +23,20 @@
                         {{ form_update.prenom_update_wtf.label }}<br>
                         {{ form_update.prenom_update_wtf(size=32) }}<br>
                         {% for error in form_update.prenom_update_wtf.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ form_update.date_de_naissance_update_wtf.label }}<br>
+                        {{ form_update.date_de_naissance_update_wtf(size=32) }}<br>
+                        {% for error in form_update.date_de_naissance_update_wtf.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                       <p>
+                        {{ form_update.numero_avs_update_wtf.label }}<br>
+                        {{ form_update.numero_avs_update_wtf(size=32) }}<br>
+                        {% for error in form_update.numero_avs_update_wtf.errors %}
                             <span style="color: red;">[{{ error }}]</span>
                         {% endfor %}
                     </p>

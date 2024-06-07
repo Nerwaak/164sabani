@@ -4,11 +4,8 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <p>
-                Ajouter un nouvel Employe (WTForms)
-            </p>
+            <p>Ajouter un nouvel Employe (WTForms)</p>
             <form action="" method="POST" novalidate>
-                <!-- Protection contre les attaques Cross-Site Request Forgery (CSRF) -->
                 {{ form.hidden_tag() }}
                 <div class="form-group">
                     <p>
@@ -18,7 +15,7 @@
                             <span style="color: red;">[{{ error }}]</span>
                         {% endfor %}
                     </p>
-                      <p>
+                    <p>
                         {{ form.prenom.label }}<br>
                         {{ form.prenom(size=32) }}<br>
                         {% for error in form.prenom.errors %}
@@ -27,7 +24,7 @@
                     </p>
                     <p>
                         {{ form.date_de_naissance.label }}<br>
-                        {{ form.date_de_naissance(size=32) }}<br>
+                        {{ form.date_de_naissance(type="date") }}<br>
                         {% for error in form.date_de_naissance.errors %}
                             <span style="color: red;">[{{ error }}]</span>
                         {% endfor %}

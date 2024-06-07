@@ -2,11 +2,12 @@
 {% block title %} Afficher CHANTIER {% endblock %}
 {% block body %}
 <div class="container">
-	<div class="row">
-		<div class="col-md-12">
-			<p>
-				Chantier
-			</p>
+    <div class="row">
+        <div class="col-md-12">
+            <p>
+                Chantier
+            </p>
+            <input type="text" id="searchRueInput" class="form-control mb-3" placeholder="Entrer la rue" style="background-color: #333; color: white; opacity: 0.8;">
             <table class="table table-bordered table-sm">
             {% if data %}
                 <thead>
@@ -17,26 +18,25 @@
                         <th class="align-middle">
                             Rue
                         </th>
-						     <th class="align-middle">
+                        <th class="align-middle">
                             Cp
                         </th>
                         <th class="align-middle">
-							Ville
+                            Ville
                         </th>
-						     <th class="align-middle">
+                        <th class="align-middle">
                             Etage
                         </th>
-						</th>
-						     <th class="align-middle">
+                        <th class="align-middle">
                             Pays
                         </th>
                         <th class="align-middle">
-							Date debut
+                            Date debut
                         </th>
-						     <th class="align-middle">
+                        <th class="align-middle">
                             Date fin
                         </th>
-						     <th class="align-middle">
+                        <th class="align-middle">
                             Statut
                         </th>
                         <th class="align-middle">
@@ -47,61 +47,82 @@
             {% endif %}
 
             {% for row in data %}
-				<tbody>
-					<tr>
-						<td class="align-middle">
-							{{ row.ID_Chantier}}
-						</td>
-						<td class="align-middle">
-							{{ row.Rue }}
-						</td>
-						<td class="align-middle">
-							{{ row.Cp}}
-						</td>
-						<td class="align-middle">
-							{{ row.Ville }}
-						</td>
-						<td class="align-middle">
-							{{ row.Etage}}
-						</td>
-						<td class="align-middle">
-							{{ row.Pays}}
-						</td>
-						<td class="align-middle">
-							{{ row.Date_debut }}
-						</td>
-						<td class="align-middle">
-							{{ row.Date_fin}}
-						</td>
-						<td class="align-middle">
-							{{ row.Statut}}
-						</td>
-						<td class="text-center" class="align-middle">
-							<a class="btn btn-primary" href="{{ url_for('genres_ajouter_wtf') }}" role="button">Ajouter</a>
-						</td>
-						<td class="text-center" class="align-middle">
-							<a class="btn btn-warning" href="{{ url_for('genre_update_wtf', id_genre_btn_edit_html=row.ID_Chantier) }}" role="button">Edit</a>
-						</td>
-						<td class="text-center" class="align-middle">
-							<a class="btn btn-danger" href="{{ url_for('genre_delete_wtf', id_genre_btn_delete_html=row.ID_Chantier) }}" role="button">Delete</a>
-						</td>
-					</tr>
-				</tbody>
+                <tbody class="data-row">
+                    <tr>
+                        <td class="align-middle">
+                            {{ row.ID_Chantier}}
+                        </td>
+                        <td class="align-middle">
+                            {{ row.Rue }}
+                        </td>
+                        <td class="align-middle">
+                            {{ row.Cp}}
+                        </td>
+                        <td class="align-middle">
+                            {{ row.Ville }}
+                        </td>
+                        <td class="align-middle">
+                            {{ row.Etage}}
+                        </td>
+                        <td class="align-middle">
+                            {{ row.Pays}}
+                        </td>
+                        <td class="align-middle">
+                            {{ row.Date_debut }}
+                        </td>
+                        <td class="align-middle">
+                            {{ row.Date_fin}}
+                        </td>
+                        <td class="align-middle">
+                            {{ row.Statut}}
+                        </td>
+                        <td class="text-center" class="align-middle">
+                            <a class="btn btn-primary" href="{{ url_for('genres_ajouter_wtf') }}" role="button">Ajouter</a>
+                        </td>
+                        <td class="text-center" class="align-middle">
+                            <a class="btn btn-warning" href="{{ url_for('genre_update_wtf', id_genre_btn_edit_html=row.ID_Chantier) }}" role="button">Edit</a>
+                        </td>
+                        <td class="text-center" class="align-middle">
+                            <a class="btn btn-danger" href="{{ url_for('genre_delete_wtf', id_genre_btn_delete_html=row.ID_Chantier) }}" role="button">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
             {% else %}
-				<tbody>
-					<tr>
-						<td>
-							Aucun Chantier.
-						</td>
-						<td>
-							<a class="btn btn-primary" href="{{ url_for('genres_ajouter_wtf') }}" role="button">Ajouter</a>
-						</td>
-					</tr>
-				</tbody>
+                <tbody>
+                    <tr>
+                        <td colspan="12">Aucun Chantier.</td>
+                        <td>
+                            <a class="btn btn-primary" href="{{ url_for('genres_ajouter_wtf') }}" role="button">Ajouter</a>
+                        </td>
+                    </tr>
+                </tbody>
             {% endfor %}
-			</table>
-		</div>
-	</div>
+            </table>
+        </div>
+    </div>
 </div>
-{% endblock %}
 
+<script>
+    document.getElementById('searchRueInput').addEventListener('keyup', function() {
+        var input, filter, table, rows, td, i, j, txtValue;
+        input = document.getElementById('searchRueInput');
+        filter = input.value.toUpperCase();
+        table = document.querySelector('.table');
+        rows = table.getElementsByClassName('data-row');
+
+        for (i = 0; i < rows.length; i++) {
+            rows[i].style.display = 'none';
+            td = rows[i].getElementsByTagName('td');
+            for (j = 0; j < td.length; j++) {
+                if (td[j]) {
+                    txtValue = td[j].textContent || td[j].innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        rows[i].style.display = '';
+                        break;
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

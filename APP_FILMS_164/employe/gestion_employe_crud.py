@@ -164,15 +164,20 @@ def employe_update_wtf():
         if request.method == "POST" and form_update.submit.data:
             nom = form_update.nom_update_wtf.data
             prenom = form_update.prenom_update_wtf.data
+            date_de_naissance = form_update.date_de_naissance_update_wtf.data
+            numero_avs = form_update.numero_avs_update_wtf.data
             notoriete = form_update.notoriete_update_wtf.data
 
             valeur_update_dictionnaire = {
+                "value_id_employe": id_employe_update,
                 "value_nom": nom,
                 "value_prenom": prenom,
+                "value_date_de_naissance": date_de_naissance,
+                "value_numero_avs": numero_avs,
                 "value_notoriete": notoriete,
             }
 
-            str_sql_update_employe = """UPDATE t_employe SET Nom = %(value_nom)s, Prenom = %(value_prenom)s, Notoriété = %(value_notoriete)s WHERE id_employe = %(value_id_employe)s"""
+            str_sql_update_employe = """UPDATE t_employe SET Nom = %(value_nom)s, Prenom = %(value_prenom)s, Date_de_naissance = %(value_date_de_naissance)s, Numero_AVS = %(value_numero_avs)s, Notoriete = %(value_notoriete)s WHERE id_employe = %(value_id_employe)s"""
             with DBconnection() as mconn_bd:
                 mconn_bd.execute(str_sql_update_employe, valeur_update_dictionnaire)
 
@@ -188,6 +193,8 @@ def employe_update_wtf():
             if data_employe:
                 form_update.nom_update_wtf.data = data_employe["Nom"]
                 form_update.prenom_update_wtf.data = data_employe["Prenom"]
+                form_update.date_de_naissance_update_wtf.data = data_employe["Date_de_naissance"]
+                form_update.numero_avs_update_wtf.data = data_employe["Numero_AVS"]
                 form_update.notoriete_update_wtf.data = data_employe["Notoriete"]
             else:
                 flash(f"L'employé avec l'id {id_employe_update} n'existe pas.", "warning")
@@ -199,6 +206,7 @@ def employe_update_wtf():
                                         f"{Exception_employe_update_wtf}")
 
     return render_template("employe/employe_update_wtf.html", form_update=form_update)
+
 
 """
     Auteur : OM 2021.04.08

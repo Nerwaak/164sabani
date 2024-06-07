@@ -96,9 +96,11 @@ class FormWTFUpdateLiaisonEmployeChantier(FlaskForm):
         submit = SubmitField('Mettre à jour Liaison')
 
 class FormWTFDeleteLiaisonEmployeChantier(FlaskForm):
-    id_liaison_wtf = StringField("ID Liaison", validators=[DataRequired()])
+    id_liaison_wtf = StringField("Effacer cette liaison", validators=[DataRequired()])
+    submit_btn_conf_del = SubmitField("Etes-vous sur d'effacer ?")
     submit_btn_del = SubmitField("Effacer Liaison")
     submit_btn_annuler = SubmitField("Annuler")
+
 
 
 

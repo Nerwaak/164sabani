@@ -559,7 +559,13 @@ def employe_chantier_delete():
                 return redirect(url_for("employe_chantier_afficher", order_by="ASC",
                                         id_employe_sel=0))
 
-            if form_delete.submit_btn_del.data:
+            if form_delete.submit_btn_conf_del.data:
+                flash("Effacer la liaison de façon définitive de la BD !!!", "danger")
+                session['confirm_delete'] = True  # Stocker une variable de session pour confirmation
+                return render_template("employe/employe_chantier_delete_wtf.html",
+                                       form_delete=form_delete, data_liaison_delete=session['data_liaison_delete'])
+
+            if form_delete.submit_btn_del.data and session.get('confirm_delete'):
                 valeur_delete_dictionnaire = {
                     "ID_employe_chantier": ID_employe_chantier_delete}
 
@@ -568,6 +574,7 @@ def employe_chantier_delete():
                     mconn_bd.execute(str_sql_delete_liaison, valeur_delete_dictionnaire)
 
                 flash("Liaison définitivement effacée !!", "success")
+                session.pop('confirm_delete', None)  # Supprimer la variable de session après la suppression
                 return redirect(url_for('employe_chantier_afficher', order_by="ASC",
                                         id_employe_sel=0))
 
@@ -594,4 +601,4 @@ def employe_chantier_delete():
         print(e)
 
     return render_template("employe/employe_chantier_delete_wtf.html",
-                           form_delete=form_delete)
+                           form_delete=form_delete, data_liaison_delete=session.get('data_liaison_delete', None))
